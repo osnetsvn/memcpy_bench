@@ -18,13 +18,13 @@ void *mem_1,*mem_2;
  */
 
 
-long num_repeats(size_t s){
+long num_repeats(long s){
         long rep=10;
-        int go_on=1;    
+        long go_on=1;
         struct timeval st,et;
         while(go_on){
                 gettimeofday(&st,NULL);
-                for (int i = 0; i < rep; i++) { // I omit warm-ups.
+                for (long i = 0; i < rep; i++) { // I omit warm-ups.
                         memcpy(mem_2, mem_1, s); // Read-write. Write only can be done by memset. 
                 }
                 gettimeofday(&et,NULL);
@@ -43,7 +43,7 @@ long num_repeats(size_t s){
  *Purpose: The cache is warmed up by performing memcpy for X/10 iterations and then the final Memcpy is performed X times.  (Unit:ms)
  */
 
-void read_write_memcpy(unsigned int total_size){
+void read_write_memcpy(long total_size){
                 long n = num_repeats(total_size); // num_repeats depends on "s
                 long warmup = n/10;
                 void *mem_1,*mem_2;     
@@ -52,6 +52,7 @@ void read_write_memcpy(unsigned int total_size){
                 double average_time;
                 mem_1 = malloc(total_size); // or you can use malloc() and run the application with "numactl"
                 mem_2 = malloc(total_size);
+//                printf("warmup:%ld iterations:%ld\n",warmup, n);
                 if(mem_1!=NULL && mem_2!=NULL){
                          for (long iteration = 0; iteration < warmup; iteration++) { // Warmup Phase
                                  memcpy(mem_2, mem_1, total_size);
@@ -90,7 +91,7 @@ int main(int argc, char*argv[]) {
         else{
                 total_size=atoi(argv[1]);
 		total_size = total_size * (1024*1024); 
-	//	printf("total_size:%ld\n",total_size);
+//		printf("total_size:%ld\n",total_size);
                 mem_1 = malloc(total_size); // or you can use malloc() and run the application with "numactl"
                 mem_2 = malloc(total_size);
                 if(mem_1!=NULL && mem_2!=NULL){
